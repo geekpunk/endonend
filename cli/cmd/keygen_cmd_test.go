@@ -62,7 +62,7 @@ func TestCmdKeygen_RefusesToOverwriteWithoutRotate(t *testing.T) {
 func TestCmdKeygen_Rotate(t *testing.T) {
 	t.Setenv("HOME", t.TempDir())
 	dir := t.TempDir()
-	src := filepath.Join(dir, "union.source.json")
+	src := filepath.Join(dir, "endonend.source.json")
 	if err := os.WriteFile(src, []byte(minimalSourceJSON), 0o644); err != nil {
 		t.Fatalf("write source: %v", err)
 	}

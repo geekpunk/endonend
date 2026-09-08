@@ -1,6 +1,6 @@
-// Command endtoend-artist-cli generates, signs, and validates the Union
+// Command endonend-artist-cli generates, signs, and validates the endonend
 // manifest described in KB/0003-manifest.md, per the CLI design in
-// KB/0004-endtoend-artist-cli.md.
+// KB/0004-endonend-artist-cli.md.
 package main
 
 import (

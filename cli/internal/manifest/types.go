@@ -138,7 +138,7 @@ type Signature struct {
 }
 
 // Manifest is the full signed manifest published at
-// <identity.url>/.well-known/union/manifest.json.
+// <identity.url>/.well-known/endonend/manifest.json.
 type Manifest struct {
 	ManifestVersion string         `json:"manifestVersion"`
 	Identity        Identity       `json:"identity"`
@@ -153,7 +153,7 @@ type Manifest struct {
 	Signature       Signature      `json:"signature"`
 }
 
-// Source is union.source.json: the same shape as Manifest minus the three
+// Source is endonend.source.json: the same shape as Manifest minus the three
 // tool-managed fields (identity.publicKey, history.headHash, signature),
 // per KB/0004's "A source config, not hand-edited output" decision.
 type Source struct {

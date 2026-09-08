@@ -1,0 +1,67 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://endonend.example/schemas/history.schema.json",
+  "title": "endonend history log",
+  "description": "Machine-readable schema for the history log format defined in KB/0003-manifest.md's 'History log format' section.",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "required": ["timestamp", "type", "data", "signature"],
+    "properties": {
+      "timestamp": { "type": "string", "format": "date-time" },
+      "type": {
+        "enum": [
+          "identity_updated",
+          "split_changed",
+          "release_added",
+          "release_updated",
+          "release_removed",
+          "key_rotated"
+        ]
+      },
+      "data": { "type": "object" },
+      "previousHash": { "type": "string" },
+      "signature": {
+        "type": "object",
+        "required": ["algorithm", "value"],
+        "properties": {
+          "algorithm": { "const": "ed25519" },
+          "value": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "allOf": [
+      {
+        "if": { "properties": { "type": { "const": "key_rotated" } } },
+        "then": {
+          "properties": {
+            "data": {
+              "type": "object",
+              "required": ["oldPublicKey", "newPublicKey"],
+              "properties": {
+                "oldPublicKey": { "type": "string", "pattern": "^ed25519:" },
+                "newPublicKey": { "type": "string", "pattern": "^ed25519:" }
+              }
+            }
+          }
+        }
+      },
+      {
+        "if": { "properties": { "type": { "const": "release_updated" } } },
+        "then": {
+          "properties": {
+            "data": {
+              "type": "object",
+              "required": ["albumId", "oldAlbumVersion", "newAlbumVersion"],
+              "properties": {
+                "albumId": { "type": "string" },
+                "oldAlbumVersion": { "type": "integer", "minimum": 1 },
+                "newAlbumVersion": { "type": "integer", "minimum": 1 }
+              }
+            }
+          }
+        }
+      }
+    ]
+  }
+}

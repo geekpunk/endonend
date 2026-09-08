@@ -45,7 +45,7 @@ func buildSignedManifest(t *testing.T) (manifest.Manifest, []manifest.HistoryEnt
 			PublicKey: signing.EncodePublicKey(pub), ContactEmail: "band@ligatures.example",
 		},
 		Refresh: manifest.Refresh{TTLSeconds: 21600},
-		History: manifest.HistoryRef{URL: "https://ligatures.example/.well-known/union/history.json", HeadHash: head},
+		History: manifest.HistoryRef{URL: "https://ligatures.example/.well-known/endonend/history.json", HeadHash: head},
 		Catalog: []manifest.Album{
 			{
 				AlbumID: "agency-2024", AlbumVersion: 1, AlbumName: "Agency", ReleaseDate: "2024-05-01",
@@ -189,7 +189,7 @@ func TestValidatePath_MissingImagesField(t *testing.T) {
 func TestValidatePath_SplitsMustSumTo100(t *testing.T) {
 	m, entries, priv := buildSignedManifest(t)
 	m.Catalog[0].Splits = []manifest.AlbumSplitEntry{
-		{ManifestURL: "https://ligatures.example/.well-known/union/manifest.json", Role: "primary", Percentage: 60},
+		{ManifestURL: "https://ligatures.example/.well-known/endonend/manifest.json", Role: "primary", Percentage: 60},
 	}
 	// Re-sign so the failure we detect is the split rule, not the
 	// signature (which would otherwise also legitimately fail).
@@ -376,7 +376,7 @@ func TestValidateURL_FetchLocationMustMatchIdentityURL(t *testing.T) {
 	// completely different host.
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
-		case "/.well-known/union/manifest.json":
+		case "/.well-known/endonend/manifest.json":
 			_ = json.NewEncoder(w).Encode(m)
 		case "/history.json":
 			_ = json.NewEncoder(w).Encode(entries)
@@ -384,7 +384,7 @@ func TestValidateURL_FetchLocationMustMatchIdentityURL(t *testing.T) {
 	}))
 	defer server.Close()
 
-	report, err := ValidateURL(server.URL+"/.well-known/union/manifest.json", Options{})
+	report, err := ValidateURL(server.URL+"/.well-known/endonend/manifest.json", Options{})
 	if err != nil {
 		t.Fatalf("ValidateURL returned error: %v", err)
 	}
@@ -400,7 +400,7 @@ func TestDeep_LabelAffiliationVerifiedOnMutualAttestation(t *testing.T) {
 	artist, entries, artistPriv := buildSignedManifest(t)
 	artistServer := newManifestServer(t, &artist, &entries)
 	defer artistServer.Close()
-	selfURL := artistServer.URL + "/.well-known/union/manifest.json"
+	selfURL := artistServer.URL + "/.well-known/endonend/manifest.json"
 	artist.Identity.URL = artistServer.URL
 	artist.History.URL = artistServer.URL + "/history.json"
 
@@ -438,7 +438,7 @@ func TestDeep_LabelAffiliationUnverifiedWhenRosterMissingArtist(t *testing.T) {
 	artist, entries, artistPriv := buildSignedManifest(t)
 	artistServer := newManifestServer(t, &artist, &entries)
 	defer artistServer.Close()
-	selfURL := artistServer.URL + "/.well-known/union/manifest.json"
+	selfURL := artistServer.URL + "/.well-known/endonend/manifest.json"
 	artist.Identity.URL = artistServer.URL
 	artist.History.URL = artistServer.URL + "/history.json"
 
@@ -477,7 +477,7 @@ func TestDeep_AlbumSplitDisputedOnMismatchedContribution(t *testing.T) {
 	artist, entries, artistPriv := buildSignedManifest(t)
 	artistServer := newManifestServer(t, &artist, &entries)
 	defer artistServer.Close()
-	selfURL := artistServer.URL + "/.well-known/union/manifest.json"
+	selfURL := artistServer.URL + "/.well-known/endonend/manifest.json"
 	artist.Identity.URL = artistServer.URL
 	artist.History.URL = artistServer.URL + "/history.json"
 

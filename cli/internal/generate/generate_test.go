@@ -35,7 +35,7 @@ func minimalSource() manifest.Source {
 }
 
 // testEnv sets up an isolated HOME (so key generation doesn't touch the
-// real ~/.union/keys) and a scratch directory for source/manifest/history
+// real ~/.endonend/keys) and a scratch directory for source/manifest/history
 // files.
 func testEnv(t *testing.T) (dir string) {
 	t.Helper()
@@ -45,7 +45,7 @@ func testEnv(t *testing.T) (dir string) {
 
 func writeSource(t *testing.T, dir string, src manifest.Source) string {
 	t.Helper()
-	path := filepath.Join(dir, "union.source.json")
+	path := filepath.Join(dir, "endonend.source.json")
 	raw, err := json.MarshalIndent(src, "", "  ")
 	if err != nil {
 		t.Fatalf("marshal source: %v", err)

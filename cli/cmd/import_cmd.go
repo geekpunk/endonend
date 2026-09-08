@@ -34,7 +34,7 @@ func parseImportBandcampArgs(args []string) (importBandcampArgs, error) {
 	url := fs.String("url", "", "Your own identity URL (where you will host these files)")
 	email := fs.String("contact-email", "", "Contact email for validation notifications")
 	idType := fs.String("type", "artist", "\"artist\" or \"label\"")
-	source := fs.String("source", sourcePath, "Path to union.source.json to create or update")
+	source := fs.String("source", sourcePath, "Path to endonend.source.json to create or update")
 	downloadDir := fs.String("download-dir", "bandcamp-import", "Local directory to download cover art and audio into")
 	skipDownload := fs.Bool("skip-download", false, "Prefill metadata and placeholder URLs only, skip downloading files")
 	if err := fs.Parse(args); err != nil {
@@ -248,6 +248,6 @@ func printImportSummary(album *bandcamp.Album, parsed importBandcampArgs, localD
 	} else {
 		fmt.Printf("Downloaded cover art and audio (128kbps streams, not your masters) to %s.\n", localDir)
 	}
-	fmt.Printf("Before running generate, upload those files to %s so they match what union.source.json now declares.\n", remoteBase)
+	fmt.Printf("Before running generate, upload those files to %s so they match what endonend.source.json now declares.\n", remoteBase)
 	fmt.Println("Bandcamp doesn't expose a separate back cover, so images.front and images.back both point at the same cover.jpg; replace images.back if you have a real one.")
 }

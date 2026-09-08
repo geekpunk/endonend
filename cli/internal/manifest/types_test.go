@@ -19,12 +19,12 @@ const exampleManifestJSON = `{
   },
   "refresh": { "ttlSeconds": 21600 },
   "label": {
-    "affiliatedLabel": "https://smalllabel.example/.well-known/union/manifest.json",
+    "affiliatedLabel": "https://smalllabel.example/.well-known/endonend/manifest.json",
     "split": { "artist": 85, "label": 15 }
   },
   "beacon": { "url": "https://ligatures.example/plays" },
   "merch": [ { "label": "Official Store", "url": "https://ligatures.example/store" } ],
-  "history": { "url": "https://ligatures.example/.well-known/union/history.json", "headHash": "sha256:9f8e7d..." },
+  "history": { "url": "https://ligatures.example/.well-known/endonend/history.json", "headHash": "sha256:9f8e7d..." },
   "presentation": {
     "colors": { "primary": "#5B96C7", "heroBackground": "#5B96C7", "background": "#1a1a1a", "text": "#e0e0e0" },
     "links": { "bandcamp": "https://ligatures.bandcamp.com/" },
@@ -41,7 +41,7 @@ const exampleManifestJSON = `{
       "downloadZip": "https://x/agency.zip",
       "purchaseLinks": [ { "format": "vinyl", "url": "https://x/vinyl" } ],
       "credits": { "paragraphs": [ "Written by Ligatures.", [ { "text": "Mastered at " }, { "text": "Cool Studio", "url": "https://coolstudio.example" } ] ] },
-      "splits": [ { "manifestUrl": "https://ligatures.example/.well-known/union/manifest.json", "role": "primary", "percentage": 100 } ],
+      "splits": [ { "manifestUrl": "https://ligatures.example/.well-known/endonend/manifest.json", "role": "primary", "percentage": 100 } ],
       "tracks": [
         { "trackId": "a1", "side": "A", "number": "A1", "name": "Opening", "duration": "3'30\"", "file": "https://x/opening.mp3", "lyrics": "First\nSecond" }
       ]
@@ -64,7 +64,7 @@ func TestManifest_RoundTripsExampleJSON(t *testing.T) {
 		{"identity.type", m.Identity.Type, "artist"},
 		{"identity.publicKey", m.Identity.PublicKey, "ed25519:AbCdEf1234567890..."},
 		{"refresh.ttlSeconds", m.Refresh.TTLSeconds, 21600},
-		{"label.affiliatedLabel", m.Label.AffiliatedLabel, "https://smalllabel.example/.well-known/union/manifest.json"},
+		{"label.affiliatedLabel", m.Label.AffiliatedLabel, "https://smalllabel.example/.well-known/endonend/manifest.json"},
 		{"label.split.artist", m.Label.Split.Artist, float64(85)},
 		{"beacon.url", m.Beacon.URL, "https://ligatures.example/plays"},
 		{"merch[0].label", m.Merch[0].Label, "Official Store"},

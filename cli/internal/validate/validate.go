@@ -1,5 +1,5 @@
 // Package validate implements the shared validation logic described in
-// KB/0004-endtoend-artist-cli.md's "Validation, in detail" section, itself
+// KB/0004-endonend-artist-cli.md's "Validation, in detail" section, itself
 // structured exactly as KB/0003-manifest.md's "Validation rules".
 package validate
 
@@ -139,7 +139,7 @@ func validateBytes(raw []byte, fetchedFrom string, entries []manifest.HistoryEnt
 	if fetchedFrom != "" {
 		s.selfURL = fetchedFrom
 	} else {
-		s.selfURL = m.Identity.URL + "/.well-known/union/manifest.json"
+		s.selfURL = m.Identity.URL + "/.well-known/endonend/manifest.json"
 	}
 
 	s.checkRequiredFields()
@@ -309,7 +309,7 @@ func (s *source) checkFetchLocation(fetchedFrom string) {
 		return
 	}
 	s.report.Checks++
-	want := strings.TrimRight(s.manifest.Identity.URL, "/") + "/.well-known/union/manifest.json"
+	want := strings.TrimRight(s.manifest.Identity.URL, "/") + "/.well-known/endonend/manifest.json"
 	if want != fetchedFrom {
 		s.fail("identity.url", KindInvalid, "identity.url (%s) does not resolve to the URL this manifest was fetched from (%s)", s.manifest.Identity.URL, fetchedFrom)
 	}

@@ -61,7 +61,7 @@ func bandcampFixtureServer(t *testing.T, artist, title string, trackTitles []str
 func TestCmdImportBandcamp_FullImportWithDownload(t *testing.T) {
 	server := bandcampFixtureServer(t, "fatal flaw", "Demo", []string{"PARACIDIC", "LOST AND FOUND"})
 	dir := t.TempDir()
-	sourceOut := filepath.Join(dir, "union.source.json")
+	sourceOut := filepath.Join(dir, "endonend.source.json")
 	downloadDir := filepath.Join(dir, "downloads")
 
 	code := captureExitCode(t, func() int {
@@ -113,7 +113,7 @@ func TestCmdImportBandcamp_FullImportWithDownload(t *testing.T) {
 func TestCmdImportBandcamp_SkipDownload(t *testing.T) {
 	server := bandcampFixtureServer(t, "fatal flaw", "Demo", []string{"PARACIDIC"})
 	dir := t.TempDir()
-	sourceOut := filepath.Join(dir, "union.source.json")
+	sourceOut := filepath.Join(dir, "endonend.source.json")
 	downloadDir := filepath.Join(dir, "downloads")
 
 	code := captureExitCode(t, func() int {
@@ -137,7 +137,7 @@ func TestCmdImportBandcamp_SkipDownload(t *testing.T) {
 func TestCmdImportBandcamp_RequiresURLAndEmailForNewSource(t *testing.T) {
 	server := bandcampFixtureServer(t, "fatal flaw", "Demo", []string{"PARACIDIC"})
 	dir := t.TempDir()
-	sourceOut := filepath.Join(dir, "union.source.json")
+	sourceOut := filepath.Join(dir, "endonend.source.json")
 
 	code := captureExitCode(t, func() int {
 		return cmdImport([]string{"bandcamp", "--source", sourceOut, server.URL + "/album/demo"})
@@ -151,7 +151,7 @@ func TestCmdImportBandcamp_UpsertsIntoExistingSource(t *testing.T) {
 	server1 := bandcampFixtureServer(t, "fatal flaw", "Demo", []string{"PARACIDIC"})
 	server2 := bandcampFixtureServer(t, "fatal flaw", "Second Album", []string{"NEW SONG"})
 	dir := t.TempDir()
-	sourceOut := filepath.Join(dir, "union.source.json")
+	sourceOut := filepath.Join(dir, "endonend.source.json")
 	downloadDir := filepath.Join(dir, "downloads")
 
 	run := func(server *httptest.Server) int {
@@ -190,7 +190,7 @@ func TestCmdImportBandcamp_UpsertsIntoExistingSource(t *testing.T) {
 func TestCmdImportBandcamp_ExistingSourceKeepsIdentityWithoutFlags(t *testing.T) {
 	server := bandcampFixtureServer(t, "fatal flaw", "Demo", []string{"PARACIDIC"})
 	dir := t.TempDir()
-	sourceOut := filepath.Join(dir, "union.source.json")
+	sourceOut := filepath.Join(dir, "endonend.source.json")
 
 	if err := writeSourceFile(sourceOut, &manifest.Source{
 		ManifestVersion: "1.0",

@@ -15,7 +15,7 @@
 - Every change to a `.go` file must come with tests in the same package (`_test.go`, table-driven where it fits). Run `go test ./...` from the module root and confirm it passes before considering the change done.
 - Lint with `golangci-lint run ./...` from the module root, against the shared `.golangci.yml` at the repo root. Fix findings instead of suppressing them; a `//nolint` must carry a comment explaining why.
 - Git hooks in `scripts/git-hooks/` run `go test ./...` and `golangci-lint run ./...` for every Go module on each commit and push, and block the commit or push on failure. One-time setup per clone: `git config core.hooksPath scripts/git-hooks`.
-- `.github/workflows/go.yml` runs the same build, vet, test, and lint steps in CI on every push to `main` and every pull request, per `KB/0002-architecture.md`'s CI/CD section. Add a new `matrix.module` entry there whenever another Go module is added (e.g. the Union Platform backend).
+- `.github/workflows/go.yml` runs the same build, vet, test, and lint steps in CI on every push to `main` and every pull request, per `KB/0002-architecture.md`'s CI/CD section. Add a new `matrix.module` entry there whenever another Go module is added (e.g. the endonend platform backend).
 
 ### Go best practices
 
@@ -31,7 +31,7 @@
 
 ## React
 
-Web frontend code lives under `web/` per `KB/0002-architecture.md`: TypeScript and React (Next.js), server-rendered for the Union Platform's discovery site and statically exported per artist/label as a self-hostable storefront from the same codebase. Keep this dual-mode constraint in mind before adding any server-only or client-only API to shared components.
+Web frontend code lives under `web/` per `KB/0002-architecture.md`: TypeScript and React (Next.js), server-rendered for the endonend platform's discovery site and statically exported per artist/label as a self-hostable storefront from the same codebase. Keep this dual-mode constraint in mind before adding any server-only or client-only API to shared components.
 
 - Function components with hooks only; no class components.
 - Type props and state explicitly; avoid `any`. Derive types from the manifest JSON Schema (`KB/0003-manifest.md`) rather than hand-duplicating shapes that can drift from it.

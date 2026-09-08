@@ -36,4 +36,7 @@ jobs:
         uses: golangci/golangci-lint-action@v6
         with:
           working-directory: ${{ matrix.module }}
-          version: latest
+          # Pinned rather than "latest": golangci-lint-action's "latest" has
+          # resolved to a v1 build older than the Go version in go.mod,
+          # which golangci-lint refuses to run against. Bump deliberately.
+          version: v2.13.2

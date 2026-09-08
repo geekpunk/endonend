@@ -10,7 +10,7 @@ import (
 
 func parseGenerateArgs(args []string) (generate.Options, error) {
 	fs := flag.NewFlagSet("generate", flag.ContinueOnError)
-	source := fs.String("source", sourcePath, "Path to union.source.json")
+	source := fs.String("source", sourcePath, "Path to endonend.source.json")
 	manifestOut := fs.String("manifest-out", manifestOutPath, "Where to write the signed manifest")
 	historyOut := fs.String("history-out", historyOutPath, "Where to write the history log")
 	if err := fs.Parse(args); err != nil {

@@ -116,7 +116,7 @@ func TestMenuImportBandcamp_CreatesSourceWhenNoneExists(t *testing.T) {
 
 	src := loadExistingSource()
 	if src == nil {
-		t.Fatal("union.source.json was not created")
+		t.Fatal("endonend.source.json was not created")
 	}
 	if src.Identity.URL != "https://ligatures.example" || src.Identity.ContactEmail != "band@ligatures.example" {
 		t.Errorf("identity = %+v", src.Identity)

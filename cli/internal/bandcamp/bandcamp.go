@@ -1,6 +1,6 @@
 // Package bandcamp reads the public data a Bandcamp album page already
 // embeds in its own HTML (title, tracklist, durations, release date, cover
-// art) so it can seed a union.source.json, per
+// art) so it can seed a endonend.source.json, per
 // KB/0005-bandcamp-import.md. It never writes a bandcamp.com or
 // bcbits.com URL into a manifest: see that doc for why.
 package bandcamp

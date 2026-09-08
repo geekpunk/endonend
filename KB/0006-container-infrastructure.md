@@ -9,7 +9,7 @@ References: [0001-purpose.md](./0001-purpose.md), [0002-architecture.md](./0002-
 
 ## Overview
 
-[0002-architecture.md](./0002-architecture.md) already commits, at a prose level, to Docker containers for the Union Platform: a `docker-compose.yml` for small self-run instances, a Helm chart for larger or cloud deployments, multi-arch OCI images, and signed images built in CI (see its "Deployment architecture" and "CI/CD" sections). This document makes those commitments concrete: an image build pattern, a compose service list, a Helm chart layout, a tagging and signing scheme, and the shape of the CI pipeline that produces all of it.
+[0002-architecture.md](./0002-architecture.md) already commits, at a prose level, to Docker containers for the endonend platform: a `docker-compose.yml` for small self-run instances, a Helm chart for larger or cloud deployments, multi-arch OCI images, and signed images built in CI (see its "Deployment architecture" and "CI/CD" sections). This document makes those commitments concrete: an image build pattern, a compose service list, a Helm chart layout, a tagging and signing scheme, and the shape of the CI pipeline that produces all of it.
 
 **In scope**: the Dockerfile pattern for Go services, `docker-compose.yml`, the Helm chart, multi-arch OCI image publishing, image signing, and the generic build/push/sign CI pipeline.
 
@@ -48,7 +48,7 @@ Lives at the repo root, so a self-hoster can run `docker compose up` right after
 
 Services:
 
-- `backend`, a generic name for the Union Platform's container(s). At MVP scale this may be a single combined service; nothing here prevents splitting it into separate `crawler`, `api`, and `search-sync` services later without changing the underlying image.
+- `backend`, a generic name for the endonend platform's container(s). At MVP scale this may be a single combined service; nothing here prevents splitting it into separate `crawler`, `api`, and `search-sync` services later without changing the underlying image.
 - `postgres`, the official pinned Postgres image, the source of truth per 0002's "Persistence layer" section.
 - `meilisearch`, the official pinned Meilisearch image, kept in sync from Postgres per the same section.
 
@@ -58,14 +58,14 @@ Named volumes, `postgres-data` and `meilisearch-data`, persist both data stores 
 
 Configuration flows through a `.env` file, with `.env.example` committed and the real `.env` gitignored, matching 0002's "Configuration is via environment variables or mounted config files" line.
 
-Compose targets a single host running one, unscaled replica of each service, a small self-run union instance or local testing. The Helm chart below targets larger-scale or cloud-orchestrated deployment instead (multiple replicas, resource limits, ingress, rolling upgrades). The two never diverge on what runs inside a container, only on how it's orchestrated: both consume the exact same published images.
+Compose targets a single host running one, unscaled replica of each service, a small self-run endonend instance or local testing. The Helm chart below targets larger-scale or cloud-orchestrated deployment instead (multiple replicas, resource limits, ingress, rolling upgrades). The two never diverge on what runs inside a container, only on how it's orchestrated: both consume the exact same published images.
 
 ## Helm chart structure
 
-Lives at `infra/helm/union-platform/`, using the `infra/` directory already set aside for deployment and infrastructure config, and named for the "Union Platform" term 0001 and 0002 already use throughout.
+Lives at `infra/helm/endonend-platform/`, using the `infra/` directory already set aside for deployment and infrastructure config, and named for the "endonend platform" term 0001 and 0002 already use throughout.
 
 ```
-infra/helm/union-platform/
+infra/helm/endonend-platform/
   Chart.yaml
   values.yaml
   templates/
@@ -92,7 +92,7 @@ The chart never builds a new image; it only references the tags the CI pipeline 
 
 Images publish to GitHub Container Registry (`ghcr.io/<org>/<image>`) as the initial registry: no extra account to set up for a GitHub-hosted open-source project already using GitHub Actions per 0002's CI/CD section, and native `GITHUB_TOKEN`/OIDC integration for both pushing and signing. This mirrors how 0002 already frames its GCP deployment as "initial," not permanent; the registry choice is revisitable (see Open questions).
 
-Builds use `docker buildx build --platform linux/amd64,linux/arm64 --push`, matching 0002's "multi-arch (amd64/arm64)... platform can run on inexpensive hardware" commitment, for example arm64-class hardware a small self-run union instance might use.
+Builds use `docker buildx build --platform linux/amd64,linux/arm64 --push`, matching 0002's "multi-arch (amd64/arm64)... platform can run on inexpensive hardware" commitment, for example arm64-class hardware a small self-run endonend instance might use.
 
 Tagging scheme:
 
@@ -129,7 +129,7 @@ This workflow is the seam a future GCP-deployment spec's own deploy job would co
 
 ## Forward reference: where the backend module lives
 
-The future Union Platform backend lives under `api/` as its own Go module (`api/go.mod`, module path `endonend/api`), matching the convention `CLAUDE.md`'s Go section already documents for `cli/`. Its internal structure, one module or several, one `cmd/` entrypoint or many, is explicitly out of scope here and deferred to whatever spec introduces it. This section exists only so the Dockerfile pattern and CI pipeline above don't assume a layout that contradicts it.
+The future endonend platform backend lives under `api/` as its own Go module (`api/go.mod`, module path `endonend/api`), matching the convention `CLAUDE.md`'s Go section already documents for `cli/`. Its internal structure, one module or several, one `cmd/` entrypoint or many, is explicitly out of scope here and deferred to whatever spec introduces it. This section exists only so the Dockerfile pattern and CI pipeline above don't assume a layout that contradicts it.
 
 ## Open questions
 

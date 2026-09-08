@@ -15,7 +15,7 @@ import (
 )
 
 const (
-	sourcePath      = "union.source.json"
+	sourcePath      = "endonend.source.json"
 	manifestOutPath = "manifest.json"
 	historyOutPath  = "history.json"
 )
@@ -24,7 +24,7 @@ func runMenu() {
 	p := newPrompter(bufio.NewReader(os.Stdin))
 	for {
 		fmt.Print(`
-endtoend-artist-cli
+endonend-artist-cli
 1) Create or update your manifest
 2) Validate a manifest
 3) Manage your signing key

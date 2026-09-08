@@ -1,6 +1,6 @@
 // Package signing implements ed25519 key generation, storage, and the
 // sign/verify operations KB/0003-manifest.md's signature section and
-// KB/0004-endtoend-artist-cli.md's key management section describe.
+// KB/0004-endonend-artist-cli.md's key management section describe.
 package signing
 
 import (
@@ -64,17 +64,17 @@ func Slug(identityURL string) string {
 	return s
 }
 
-// KeyDir returns ~/.union/keys, creating it (mode 0700) if needed.
+// KeyDir returns ~/.endonend/keys, creating it (mode 0700) if needed.
 func KeyDir() (string, error) {
 	home, err := os.UserHomeDir()
 	if err != nil {
 		return "", fmt.Errorf("locate home directory: %w", err)
 	}
-	dir := filepath.Join(home, ".union", "keys")
+	dir := filepath.Join(home, ".endonend", "keys")
 	if err := os.MkdirAll(dir, 0o700); err != nil {
 		return "", fmt.Errorf("create key directory: %w", err)
 	}
-	gitignore := filepath.Join(filepath.Join(home, ".union"), ".gitignore")
+	gitignore := filepath.Join(filepath.Join(home, ".endonend"), ".gitignore")
 	if _, err := os.Stat(gitignore); os.IsNotExist(err) {
 		_ = os.WriteFile(gitignore, []byte("keys/\n"), 0o644)
 	}

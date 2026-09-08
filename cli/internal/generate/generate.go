@@ -1,5 +1,5 @@
 // Package generate implements the "Create or update your manifest" logic
-// from KB/0004-endtoend-artist-cli.md: read union.source.json, diff it
+// from KB/0004-endonend-artist-cli.md: read endonend.source.json, diff it
 // against the previously generated manifest.json (if any) to compute
 // history entries automatically, then write a freshly signed manifest.json
 // and updated history.json.
@@ -123,7 +123,7 @@ func Run(opts Options) (*Result, error) {
 		}
 	}
 
-	historyURL := src.Identity.URL + "/.well-known/union/history.json"
+	historyURL := src.Identity.URL + "/.well-known/endonend/history.json"
 	if src.History != nil && src.History.URL != "" {
 		historyURL = src.History.URL
 	}

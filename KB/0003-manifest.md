@@ -14,13 +14,13 @@ This document defines the concrete file format for the signed manifest every art
 Format: JSON, UTF-8, published as a static file at a well-known path relative to a URL the artist or label controls:
 
 ```
-<identity.url>/.well-known/union/manifest.json
+<identity.url>/.well-known/endonend/manifest.json
 ```
 
 with its paired history log at:
 
 ```
-<identity.url>/.well-known/union/history.json
+<identity.url>/.well-known/endonend/history.json
 ```
 
 This is deliberately a URL, not a bare domain: not every artist owns a domain, but many can still control a specific path, a GitHub Pages project URL, for example, even on a host they don't own outright. Identity is anchored to whatever URL prefix they actually control, not to domain registration.
@@ -64,7 +64,7 @@ Nothing here exists purely for developer convenience; a field that doesn't trace
 | -------------- | ------ | -------- | -------------------------------------------------------------------------------------------------- |
 | `type`         | string | Yes      | `"artist"` or `"label"`.                                                                           |
 | `name`         | string | Yes      | Display name.                                                                                      |
-| `url`          | string (URL) | Yes | The base URL this identity publishes under, e.g. `"https://ligatures.example"` or `"https://someartist.github.io/bandname"`. The manifest must actually live at `<url>/.well-known/union/manifest.json`. |
+| `url`          | string (URL) | Yes | The base URL this identity publishes under, e.g. `"https://ligatures.example"` or `"https://someartist.github.io/bandname"`. The manifest must actually live at `<url>/.well-known/endonend/manifest.json`. |
 | `publicKey`    | string | Yes      | E.g. `"ed25519:<base64>"`. The key whose private half signs this manifest and every history entry. |
 | `contactEmail` | string | Yes      | Where validation-failure notifications (see 0002) are sent.                                        |
 
@@ -284,7 +284,7 @@ Both the Go and Kotlin Multiplatform test suites load these vectors and assert b
     "ttlSeconds": 21600
   },
   "label": {
-    "affiliatedLabel": "https://smalllabel.example/.well-known/union/manifest.json",
+    "affiliatedLabel": "https://smalllabel.example/.well-known/endonend/manifest.json",
     "split": { "artist": 85, "label": 15 }
   },
   "beacon": {
@@ -294,7 +294,7 @@ Both the Go and Kotlin Multiplatform test suites load these vectors and assert b
     { "label": "Official Store", "url": "https://ligatures.example/store" }
   ],
   "history": {
-    "url": "https://ligatures.example/.well-known/union/history.json",
+    "url": "https://ligatures.example/.well-known/endonend/history.json",
     "headHash": "sha256:9f8e7d..."
   },
   "presentation": {
@@ -338,9 +338,9 @@ Both the Go and Kotlin Multiplatform test suites load these vectors and assert b
         ]
       },
       "splits": [
-        { "manifestUrl": "https://ligatures.example/.well-known/union/manifest.json", "role": "primary", "percentage": 70 },
-        { "manifestUrl": "https://janedoe.example/.well-known/union/manifest.json", "role": "feature", "percentage": 20 },
-        { "manifestUrl": "https://smalllabel.example/.well-known/union/manifest.json", "role": "label", "percentage": 10 }
+        { "manifestUrl": "https://ligatures.example/.well-known/endonend/manifest.json", "role": "primary", "percentage": 70 },
+        { "manifestUrl": "https://janedoe.example/.well-known/endonend/manifest.json", "role": "feature", "percentage": 20 },
+        { "manifestUrl": "https://smalllabel.example/.well-known/endonend/manifest.json", "role": "label", "percentage": 10 }
       ],
       "presentation": {
         "colors": {
@@ -391,17 +391,17 @@ A label manifest carries no `catalog`, since it hosts no tracks itself. It exist
   "label": {
     "roster": [
       {
-        "artistManifestUrl": "https://ligatures.example/.well-known/union/manifest.json",
+        "artistManifestUrl": "https://ligatures.example/.well-known/endonend/manifest.json",
         "split": { "artist": 85, "label": 15 }
       },
       {
-        "artistManifestUrl": "https://anotherband.example/.well-known/union/manifest.json",
+        "artistManifestUrl": "https://anotherband.example/.well-known/endonend/manifest.json",
         "split": { "artist": 80, "label": 20 }
       }
     ]
   },
   "history": {
-    "url": "https://smalllabel.example/.well-known/union/history.json",
+    "url": "https://smalllabel.example/.well-known/endonend/history.json",
     "headHash": "sha256:1a2b3c..."
   },
   "presentation": {
@@ -431,7 +431,7 @@ An artist without their own domain identifies the same way, just with a URL that
 }
 ```
 
-Their manifest lives at `https://smallcombo.github.io/small-combo/.well-known/union/manifest.json`. The validation rule is identical: fetch location must equal `identity.url` plus the fixed suffix. Nothing about verification cares whether the URL is a domain root or a path on shared hosting.
+Their manifest lives at `https://smallcombo.github.io/small-combo/.well-known/endonend/manifest.json`. The validation rule is identical: fetch location must equal `identity.url` plus the fixed suffix. Nothing about verification cares whether the URL is a domain root or a path on shared hosting.
 
 ### Example contribution confirmation
 
@@ -441,7 +441,7 @@ The featured artist on "Agency" (`janedoe.example`) has no roster to list a clai
 {
   "contributions": [
     {
-      "manifestUrl": "https://ligatures.example/.well-known/union/manifest.json",
+      "manifestUrl": "https://ligatures.example/.well-known/endonend/manifest.json",
       "albumId": "agency-2024",
       "albumVersion": 1,
       "role": "feature",
@@ -458,7 +458,7 @@ This matches the `splits` entry for her on Ligatures' "Agency" album above, so t
 - Every required field listed above is present and of the correct type.
 - Every field typed `string (URL)`, or an array of that type such as `images.insert`, (including `merch[].url`, `catalog[].purchaseLinks[].url`, and every other link in the manifest) is a well-formed `http` or `https` URL; no other schemes are accepted.
 - `images.front` and `images.back` are both present on every album; `images.insert` may be an empty array but must be present as a field.
-- `identity.url` plus the fixed suffix `/.well-known/union/manifest.json` equals the URL the manifest was actually fetched from, so a URL can't claim an identity it doesn't actually serve.
+- `identity.url` plus the fixed suffix `/.well-known/endonend/manifest.json` equals the URL the manifest was actually fetched from, so a URL can't claim an identity it doesn't actually serve.
 - `identity.publicKey` is well-formed, and `signature.value` verifies against it over the canonicalized manifest.
 - Every `signature.algorithm`, on the manifest itself and on every history entry, is exactly `"ed25519"`; any other value is rejected outright, never tolerated as an unrecognized-but-harmless field.
 - If `label.split` (or a roster entry's `split`) is present, its values sum to 100.
