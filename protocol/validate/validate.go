@@ -5,6 +5,7 @@ package validate
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"net/http"
@@ -43,6 +44,17 @@ type Report struct {
 	Checks   int       `json:"checks"`
 	Failures []Failure `json:"failures,omitempty"`
 	Warnings []string  `json:"warnings"`
+
+	// Manifest, History, and RawJSON are the parsed manifest, its history
+	// entries, and its original fetched bytes, populated whenever the raw
+	// JSON at least parses (even if validation then fails on some other
+	// rule). A caller that wants to consume the data, not just know
+	// whether it's valid, should still check Valid before trusting these,
+	// since an untrusted or malformed manifest can parse just fine while
+	// failing signature or structural checks.
+	Manifest *manifest.Manifest      `json:"-"`
+	History  []manifest.HistoryEntry `json:"-"`
+	RawJSON  []byte                  `json:"-"`
 }
 
 type Options struct {
@@ -110,6 +122,16 @@ func ValidateURL(target string, opts Options) (*Report, error) {
 	return validateBytes(raw, target, entries, histErr, opts)
 }
 
+// ValidateRawJSON validates raw manifest bytes with no paired history.json
+// fetch attempted, useful for a dry-run/inspect check before a manifest (or
+// its history log) is actually published anywhere yet, per
+// KB/0010-mvp-scope.md's admin-console "by hand/upload" mode. History-chain
+// checks report as missing rather than passing, the same as any other
+// unfetchable history.json.
+func ValidateRawJSON(raw []byte, opts Options) (*Report, error) {
+	return validateBytes(raw, "", nil, errors.New("history not fetched: raw JSON validated with no network access"), opts)
+}
+
 func fetch(client *http.Client, target string) ([]byte, error) {
 	resp, err := client.Get(target)
 	if err != nil {
@@ -134,6 +156,9 @@ func validateBytes(raw []byte, fetchedFrom string, entries []manifest.HistoryEnt
 		})
 		return r, nil
 	}
+	r.Manifest = &m
+	r.History = entries
+	r.RawJSON = raw
 
 	s := &source{report: r, manifest: &m, rawJSON: raw, history: entries, histErr: histErr}
 	if fetchedFrom != "" {

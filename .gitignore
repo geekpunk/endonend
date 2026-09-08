@@ -3,8 +3,13 @@
 
 # Go build artifacts
 /cli/cli
-/cli/endtoend-artist-cli
+/cli/endonend-artist-cli
 /cli/bin/
+/api/server
+/api/bin/
+
+# Local environment overrides for docker-compose
+.env
 
 # import bandcamp's downloaded audio/art (never the artist's masters, never committed)
 bandcamp-import/

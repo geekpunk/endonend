@@ -99,6 +99,40 @@ func TestValidatePath_ValidManifest(t *testing.T) {
 	if len(report.Failures) != 0 {
 		t.Errorf("report.Failures = %+v, want none", report.Failures)
 	}
+	if report.Manifest == nil {
+		t.Fatal("report.Manifest = nil, want the parsed manifest on a valid report")
+	}
+	if report.Manifest.Identity.Name != m.Identity.Name {
+		t.Errorf("report.Manifest.Identity.Name = %q, want %q", report.Manifest.Identity.Name, m.Identity.Name)
+	}
+	if len(report.History) != len(entries) {
+		t.Errorf("len(report.History) = %d, want %d", len(report.History), len(entries))
+	}
+	if len(report.RawJSON) == 0 {
+		t.Error("report.RawJSON is empty, want the original manifest bytes")
+	}
+}
+
+func TestValidateRawJSON_ChecksSignatureWithoutFetchingHistory(t *testing.T) {
+	m, _, _ := buildSignedManifest(t)
+	raw, err := json.Marshal(m)
+	if err != nil {
+		t.Fatalf("marshal manifest: %v", err)
+	}
+
+	report, err := ValidateRawJSON(raw, Options{})
+	if err != nil {
+		t.Fatalf("ValidateRawJSON returned error: %v", err)
+	}
+	if report.Manifest == nil {
+		t.Fatal("report.Manifest = nil, want the parsed manifest")
+	}
+	if report.Valid {
+		t.Error("report.Valid = true with no history.json reachable, want false (history chain can't be confirmed)")
+	}
+	if !hasFailureField(report, "history") {
+		t.Errorf("failures = %+v, want one on history (unreachable)", report.Failures)
+	}
 }
 
 func TestValidatePath_TamperedFieldFailsSignature(t *testing.T) {
