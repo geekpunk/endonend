@@ -11,7 +11,7 @@ References: [0001-purpose.md](./0001-purpose.md)
 
 This document proposes a concrete architecture: languages, deployment, CI/CD, the centralized platform's persistence layer, and how the artist/album/label protocol is enforced. It must stay consistent with the principles Accepted in [0001-purpose.md](./0001-purpose.md), in particular artist-owned infrastructure, container-based deployment with no vendor lock-in, protocol plus centralized reference experience, verifiable listening signals, and verifiable artists and labels with open history. Where a choice below isn't strictly required by those principles, it's marked as a recommendation that can be revisited later in a narrow `Decision` doc, per `KB/README.md`.
 
-**This is the MVP architecture.** It defines the minimum system needed to validate the core mechanism: artist-owned static catalogs, an endonend platform that discovers, verifies, and indexes them, and basic playback. Playlists, fan sharing, radio/shuffle-style discovery, and broader cross-instance federation are explicitly out of scope here, per the non-goals and "What comes next" roadmap already in [0001-purpose.md](./0001-purpose.md), and will get their own specs once the MVP is validated.
+**This is the MVP architecture.** It defines the minimum system needed to validate the core mechanism: artist-owned static catalogs, an endonend platform that discovers, verifies, and indexes them, and basic playback. Playlists, fan sharing, radio/shuffle-style discovery, and broader cross-instance federation are explicitly out of scope here, per the non-goals and "What comes next" roadmap already in [0001-purpose.md](./0001-purpose.md), and will get their own specs once the MVP is validated. The concrete v1 cut of this architecture, including the catalog API's GraphQL choice and the shared-validator `protocol/` module, is pinned in [0010-mvp-scope.md](./0010-mvp-scope.md); this document describes the full system, not just what's built first.
 
 ## System components
 
@@ -173,4 +173,5 @@ These are intentionally left to future `Decision` or `Spec` docs rather than set
 - [0003-manifest.md](./0003-manifest.md): the concrete manifest file format this architecture enforces.
 - [0004-endonend-artist-cli.md](./0004-endonend-artist-cli.md): the CLI tool that generates, signs, and validates that manifest.
 - [0008-governance.md](./0008-governance.md): the no-central-authority stance behind why transparency reporting is optional for self-hosted instances.
+- [0010-mvp-scope.md](./0010-mvp-scope.md): the concrete v1 cut of this architecture.
 - [KB/README.md](./README.md): KB conventions this document follows.

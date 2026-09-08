@@ -14,9 +14,9 @@ import (
 	"strings"
 	"time"
 
-	"endonend/cli/internal/history"
-	"endonend/cli/internal/manifest"
-	"endonend/cli/internal/signing"
+	"endonend/protocol/history"
+	"endonend/protocol/manifest"
+	"endonend/protocol/signing"
 )
 
 // Kind classifies a failure the way 0004 asks for: not a raw parser error,

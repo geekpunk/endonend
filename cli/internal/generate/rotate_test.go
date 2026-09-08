@@ -4,9 +4,9 @@ import (
 	"os"
 	"testing"
 
-	"endonend/cli/internal/history"
-	"endonend/cli/internal/manifest"
-	"endonend/cli/internal/signing"
+	"endonend/protocol/history"
+	"endonend/protocol/manifest"
+	"endonend/protocol/signing"
 )
 
 func TestRotate_SwitchesKeyAndRecordsEntry(t *testing.T) {

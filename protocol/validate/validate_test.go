@@ -9,9 +9,9 @@ import (
 	"path/filepath"
 	"testing"
 
-	"endonend/cli/internal/history"
-	"endonend/cli/internal/manifest"
-	"endonend/cli/internal/signing"
+	"endonend/protocol/history"
+	"endonend/protocol/manifest"
+	"endonend/protocol/signing"
 )
 
 // buildSignedManifest returns a minimal, validly signed manifest and its

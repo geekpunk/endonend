@@ -6,7 +6,7 @@ import (
 	"os"
 
 	"endonend/cli/internal/generate"
-	"endonend/cli/internal/signing"
+	"endonend/protocol/signing"
 )
 
 type keygenArgs struct {

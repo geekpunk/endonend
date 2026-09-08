@@ -12,10 +12,10 @@ import (
 	"os"
 	"time"
 
-	"endonend/cli/internal/canonical"
-	"endonend/cli/internal/history"
-	"endonend/cli/internal/manifest"
-	"endonend/cli/internal/signing"
+	"endonend/protocol/canonical"
+	"endonend/protocol/history"
+	"endonend/protocol/manifest"
+	"endonend/protocol/signing"
 )
 
 type Options struct {

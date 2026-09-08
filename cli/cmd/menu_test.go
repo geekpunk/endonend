@@ -6,7 +6,7 @@ import (
 	"strings"
 	"testing"
 
-	"endonend/cli/internal/manifest"
+	"endonend/protocol/manifest"
 )
 
 func TestIsURL(t *testing.T) {

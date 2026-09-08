@@ -11,9 +11,9 @@ import (
 	"strings"
 
 	"endonend/cli/internal/bandcamp"
-	"endonend/cli/internal/manifest"
 	"endonend/cli/internal/slug"
 	"endonend/cli/internal/spinner"
+	"endonend/protocol/manifest"
 )
 
 type importBandcampArgs struct {

@@ -8,10 +8,10 @@ import (
 	"os"
 
 	"endonend/cli/internal/generate"
-	"endonend/cli/internal/manifest"
-	"endonend/cli/internal/signing"
 	"endonend/cli/internal/spinner"
-	"endonend/cli/internal/validate"
+	"endonend/protocol/manifest"
+	"endonend/protocol/signing"
+	"endonend/protocol/validate"
 )
 
 const (

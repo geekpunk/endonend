@@ -7,8 +7,8 @@ import (
 	"testing"
 	"time"
 
-	"endonend/cli/internal/manifest"
-	"endonend/cli/internal/signing"
+	"endonend/protocol/manifest"
+	"endonend/protocol/signing"
 )
 
 func fixedNow() time.Time {

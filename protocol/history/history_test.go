@@ -3,7 +3,7 @@ package history
 import (
 	"testing"
 
-	"endonend/cli/internal/manifest"
+	"endonend/protocol/manifest"
 )
 
 func entry(previousHash, sigValue string) manifest.HistoryEntry {

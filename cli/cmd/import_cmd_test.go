@@ -10,7 +10,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"endonend/cli/internal/manifest"
+	"endonend/protocol/manifest"
 )
 
 // bandcampFixtureServer serves a minimal Bandcamp-shaped album page whose

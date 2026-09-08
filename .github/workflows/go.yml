@@ -12,7 +12,7 @@ jobs:
       matrix:
         # Add a new entry here whenever another Go module is added
         # (e.g. the endonend platform backend from KB/0002-architecture.md).
-        module: [cli]
+        module: [cli, protocol]
     defaults:
       run:
         working-directory: ${{ matrix.module }}

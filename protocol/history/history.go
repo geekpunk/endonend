@@ -9,8 +9,8 @@ import (
 	"encoding/hex"
 	"fmt"
 
-	"endonend/cli/internal/canonical"
-	"endonend/cli/internal/manifest"
+	"endonend/protocol/canonical"
+	"endonend/protocol/manifest"
 )
 
 const HashPrefix = "sha256:"

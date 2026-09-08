@@ -13,7 +13,7 @@ import (
 	"regexp"
 	"strings"
 
-	"endonend/cli/internal/canonical"
+	"endonend/protocol/canonical"
 )
 
 const KeyPrefix = "ed25519:"

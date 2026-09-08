@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"time"
 
-	"endonend/cli/internal/history"
-	"endonend/cli/internal/manifest"
-	"endonend/cli/internal/signing"
+	"endonend/protocol/history"
+	"endonend/protocol/manifest"
+	"endonend/protocol/signing"
 )
 
 type RotateOptions struct {

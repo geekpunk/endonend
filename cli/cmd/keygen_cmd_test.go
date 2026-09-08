@@ -5,7 +5,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"endonend/cli/internal/signing"
+	"endonend/protocol/signing"
 )
 
 func TestParseKeygenArgs_RequiresURLUnlessRotating(t *testing.T) {
