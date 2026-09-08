@@ -100,3 +100,7 @@ This runs `go test` and `golangci-lint` on affected Go modules before each commi
 ### CI
 
 `.github/workflows/go.yml` runs the same build, vet, test, and lint steps on every push to `main` and every pull request.
+
+## License
+
+MIT, see [`LICENSE`](./LICENSE). See [`KB/0007-license.md`](./KB/0007-license.md) for the alternatives considered and why.
