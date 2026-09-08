@@ -133,14 +133,14 @@ The future endonend platform backend lives under `api/` as its own Go module (`a
 
 ## Open questions
 
-- GCP-specific deployment (Cloud Run, Cloud SQL, Secret Manager, Workload Identity Federation), deferred to a dedicated future spec per 0002's existing "Initial deployment (GCP)" section.
-- The backend module's own internal code structure, deferred to whatever spec introduces `api/`.
-- Exact resource requests and limits for the Helm chart and compose file, which need real workload data this project doesn't have yet.
-- Ingress and TLS termination strategy for the Helm chart: which ingress controller to assume, whether to depend on cert-manager, or stay ingress-controller-agnostic.
-- Whether `ghcr.io` remains the registry long-term, or a narrow `Decision` doc later revisits it, per `KB/README.md`'s definition of a Decision as one specific, revisitable choice.
-- Whether Postgres in the Helm chart keeps depending on an external subchart (for example Bitnami's) and what its version-pinning and upgrade policy is.
-- Whether the crawler, catalog API, and search sync ship as one container image or three, which determines whether the Dockerfile, Helm templates, and CI matrix above end up as one or several.
-- Backup and restore strategy for the compose file's named Postgres volume; self-run instances have no guidance yet beyond "the volume persists."
+- Still open: GCP-specific deployment (Cloud Run, Cloud SQL, Secret Manager, Workload Identity Federation), deferred to a dedicated future spec per 0002's existing "Initial deployment (GCP)" section.
+- Still open: the backend module's own internal code structure, deferred to whatever spec introduces `api/`.
+- Still open: exact resource requests and limits for the Helm chart and compose file, which need real workload data this project doesn't have yet.
+- **Ingress and TLS termination strategy.** Resolved: ingress-controller-agnostic. The chart's `ingress.yaml` templates a standard Kubernetes `Ingress` resource with `values.yaml`-driven, optional `cert-manager` annotations (`cert-manager.io/cluster-issuer`, left blank/omitted by default), so it works unmodified with nginx-ingress, Traefik, or any other controller a self-hoster already runs, and cert-manager is a convenience a self-hoster opts into rather than a hard dependency.
+- Still open, and intentionally left revisitable: whether `ghcr.io` remains the registry long-term, per `KB/README.md`'s definition of a Decision as one specific, revisitable choice.
+- **Postgres subchart dependency and versioning.** Resolved: keeps depending on an external community subchart (for example Bitnami's `postgresql`), version-pinned to a specific chart version in `Chart.yaml`, not a floating range, matching the deliberate-bump precedent already set for `golangci-lint-action` in `.github/workflows/go.yml`. Bumping it is a deliberate, reviewed change, never an automatic floating upgrade.
+- **One container image or three.** Resolved: one image for MVP, with the crawler, catalog API, and search sync as separate `cmd/` entrypoints in the single future `api/` module, matching this document's own compose section already describing `backend` as "may be a single combined service" at MVP scale. The Dockerfile's `BINARY` build argument (see Image build strategy above) already supports building any one of them from the same pattern, so splitting into separate images later is a CI/Helm change, not a code or protocol change.
+- **Backup and restore strategy for the compose Postgres volume.** Resolved: no backup automation is built by the platform for compose. Self-run instances are pointed to a documented `pg_dump`-based example (a short script and a cron example, written alongside the actual `docker-compose.yml` implementation), the standard approach for a single-host Postgres container, rather than the platform inventing its own backup mechanism. The Helm chart's Postgres subchart may separately expose its own backup options (for example Bitnami's optional pgBackRest integration); using them is left to the operator, not required for MVP.
 
 ## References
 

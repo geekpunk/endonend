@@ -11,7 +11,7 @@ jobs:
     strategy:
       matrix:
         # Add a new entry here whenever another Go module is added
-        # (e.g. the Union Platform backend from KB/0002-architecture.md).
+        # (e.g. the endonend platform backend from KB/0002-architecture.md).
         module: [cli]
     defaults:
       run:
@@ -33,10 +33,12 @@ jobs:
         run: go test ./...
 
       - name: Lint
-        uses: golangci/golangci-lint-action@v6
+        uses: golangci/golangci-lint-action@v7
         with:
           working-directory: ${{ matrix.module }}
-          # Pinned rather than "latest": golangci-lint-action's "latest" has
-          # resolved to a v1 build older than the Go version in go.mod,
-          # which golangci-lint refuses to run against. Bump deliberately.
+          # Pinned rather than "latest": golangci-lint-action v6 only
+          # understands golangci-lint v1, and v6's "latest" resolved to a v1
+          # build older than the Go version in go.mod, which golangci-lint
+          # refuses to run against. v7 supports golangci-lint v2; pin
+          # deliberately rather than tracking "latest" again.
           version: v2.13.2

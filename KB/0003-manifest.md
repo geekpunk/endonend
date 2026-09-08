@@ -72,7 +72,7 @@ Nothing here exists purely for developer convenience; a field that doesn't trace
 
 | Field | Type | Required | Description |
 |---|---|---|---|
-| `ttlSeconds` | integer | Yes | How often the crawler should re-check this manifest. Clamped by the platform to a min/max (exact bounds are an open question in 0002). |
+| `ttlSeconds` | integer | Yes | How often the crawler should re-check this manifest. Clamped by the platform to a minimum of 300 (5 minutes, protects the crawler and the artist's host from a misconfigured, extremely low value) and a maximum of 604800 (7 days, so an artist can't become effectively unreachable). A manifest that omits the field, or that a validator can't yet trust enough to read (signature not yet verified), falls back to the platform default of 86400 (24 hours). See [0002-architecture.md](./0002-architecture.md)'s Protocol enforcement section. |
 
 ### `label`
 
@@ -111,7 +111,7 @@ A crawler considers an album-level split entry verified only when it finds a mat
 
 | Field | Type | Required | Description |
 |---|---|---|---|
-| `url` | string (URL) | No | Endpoint clients ping on play start, per the Analytics section of 0002. |
+| `url` | string (URL) | No | Endpoint clients ping on play start, per the Analytics section of 0002. Its presence also opts this identity into the optional media edge cache described in 0002's Caching section, since it's the only channel a cache-served play can be reported back through. |
 
 ### `merch`
 
@@ -473,11 +473,11 @@ Any failure here is exactly what triggers the crawler's or CLI's rejection-and-n
 
 ## Open questions
 
-- How long a one-sided label-affiliation claim is shown as "pending" before being treated as disputed, to cover the ordinary propagation delay between an artist publishing an update and the label's own manifest catching up on its next crawl.
-- Whether `albumId` and `trackId` need any uniqueness guarantee beyond "stable within one artist's manifest," for example if a track is ever referenced from outside that artist's own catalog.
-- The literal machine-readable JSON Schema file generated from this spec, the artifact both the Go and Kotlin Multiplatform validators actually compile or test against, per 0002's "kept honest by a shared schema" approach.
-- Whether `contributions` needs an upper bound or pagination once a prolific session musician or producer accumulates confirmations across many artists' catalogs, so their own manifest doesn't grow unbounded.
-- The same pending-versus-disputed grace period question as label affiliation, applied to album `splits` awaiting a `contributions` match.
+- **Pending-versus-disputed grace period (label affiliation).** Resolved: 14 days from when a one-sided claim first appears, comfortably longer than twice the maximum refresh TTL (7 days, see `refresh.ttlSeconds` above), so both parties are guaranteed at least one full crawl cycle each even in the worst case where both were just crawled right before the window opened. Still unconfirmed after 14 days is shown as disputed, not pending.
+- **`albumId`/`trackId` uniqueness scope.** Resolved: no guarantee beyond "stable within one manifest" is needed. Every cross-reference in this spec (`contributions`, album `splits`) already identifies a release or track by the pair (`manifestUrl`, `albumId`) or (`manifestUrl`, `trackId`), never by `albumId`/`trackId` alone, so per-manifest uniqueness is sufficient by construction.
+- **Machine-readable JSON Schema artifact.** Resolved: [`tests/conformance/manifest.schema.json`](../tests/conformance/manifest.schema.json) and [`tests/conformance/history.schema.json`](../tests/conformance/history.schema.json), checked against this spec's own example manifests and history entry. This is the shared artifact both the Go and Kotlin Multiplatform validators compile or test against, per 0002's "kept honest by a shared schema" approach.
+- **`contributions` upper bound.** Resolved: no cap in v1. A large `contributions` array only grows the hosting cost of the party publishing it, their own static file, already a self-limiting, artist-borne cost consistent with the artist-owned-infrastructure principle, not a protocol-level concern. A crawler implementation is free to stream-parse a large manifest rather than loading it fully into memory, but that's an implementation detail, not a schema constraint.
+- **Pending-versus-disputed grace period (album `splits`).** Resolved: same 14-day grace period as label affiliation above, for the same reasoning.
 
 ## References
 
