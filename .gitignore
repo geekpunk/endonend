@@ -1,0 +1,26 @@
+.DS_Store
+.obsidian/
+
+# Go build artifacts
+/cli/cli
+/cli/bin/
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+coverage.txt
+coverage.html
+
+# Node/TypeScript build artifacts (web frontend, once added)
+node_modules/
+dist/
+build/
+.next/
+out/
+
+# Editor/IDE
+.vscode/
+.idea/

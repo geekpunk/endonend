@@ -1,0 +1,39 @@
+name: Go
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        # Add a new entry here whenever another Go module is added
+        # (e.g. the Union Platform backend from KB/0002-architecture.md).
+        module: [cli]
+    defaults:
+      run:
+        working-directory: ${{ matrix.module }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: ${{ matrix.module }}/go.mod
+
+      - name: Build
+        run: go build ./...
+
+      - name: Vet
+        run: go vet ./...
+
+      - name: Test
+        run: go test ./...
+
+      - name: Lint
+        uses: golangci/golangci-lint-action@v6
+        with:
+          working-directory: ${{ matrix.module }}
+          version: latest
