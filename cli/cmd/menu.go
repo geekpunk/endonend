@@ -10,6 +10,7 @@ import (
 	"endonend/cli/internal/generate"
 	"endonend/cli/internal/manifest"
 	"endonend/cli/internal/signing"
+	"endonend/cli/internal/spinner"
 	"endonend/cli/internal/validate"
 )
 
@@ -222,6 +223,13 @@ func menuValidate(p *prompter) {
 }
 
 func runValidate(target string, deep bool) (*validate.Report, error) {
+	message := fmt.Sprintf("Validating %s...", target)
+	if deep {
+		message = fmt.Sprintf("Validating %s (deep checks, this fetches other manifests)...", target)
+	}
+	sp := spinner.New(os.Stderr, message)
+	defer sp.Stop()
+
 	opts := validate.Options{Deep: deep}
 	if isURL(target) {
 		return validate.ValidateURL(target, opts)

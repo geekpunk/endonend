@@ -13,6 +13,7 @@ import (
 	"endonend/cli/internal/bandcamp"
 	"endonend/cli/internal/manifest"
 	"endonend/cli/internal/slug"
+	"endonend/cli/internal/spinner"
 )
 
 type importBandcampArgs struct {
@@ -76,10 +77,13 @@ func cmdImportBandcamp(args []string) int {
 // parsed.skipDownload is set. Shared by the "import bandcamp" subcommand
 // and the interactive menu's equivalent option.
 func importBandcamp(parsed importBandcampArgs) error {
+	sp := spinner.New(os.Stderr, fmt.Sprintf("Fetching %s...", parsed.albumURL))
 	album, err := bandcamp.Fetch(http.DefaultClient, parsed.albumURL)
 	if err != nil {
+		sp.Stop()
 		return err
 	}
+	sp.Update(fmt.Sprintf("Fetched %q by %s", album.Title, album.ArtistName))
 
 	src := manifest.Source{}
 	if existing := loadSourceFile(parsed.sourcePath); existing != nil {
@@ -127,10 +131,12 @@ func importBandcamp(parsed importBandcampArgs) error {
 	})
 
 	if !parsed.skipDownload {
-		if err := downloadAlbumAssets(album, localDir); err != nil {
+		if err := downloadAlbumAssets(album, localDir, sp); err != nil {
+			sp.Stop()
 			return err
 		}
 	}
+	sp.Stop()
 
 	if err := writeSourceFile(parsed.sourcePath, &src); err != nil {
 		return err
@@ -195,19 +201,21 @@ func buildTracksFromBandcamp(album *bandcamp.Album, albumID, remoteBase string) 
 // response.
 const maxDownloadBytes = 200 << 20
 
-func downloadAlbumAssets(album *bandcamp.Album, localDir string) error {
+func downloadAlbumAssets(album *bandcamp.Album, localDir string, sp *spinner.Spinner) error {
 	if err := os.MkdirAll(localDir, 0o755); err != nil {
 		return fmt.Errorf("create %s: %w", localDir, err)
 	}
 	if album.ArtURL != "" {
+		sp.Update("Downloading cover art...")
 		if err := downloadFile(album.ArtURL, filepath.Join(localDir, "cover.jpg")); err != nil {
 			return fmt.Errorf("download cover art: %w", err)
 		}
 	}
-	for _, t := range album.Tracks {
+	for i, t := range album.Tracks {
 		if t.StreamURL == "" {
 			continue
 		}
+		sp.Update(fmt.Sprintf("Downloading track %d/%d: %s...", i+1, len(album.Tracks), t.Title))
 		if err := downloadFile(t.StreamURL, filepath.Join(localDir, trackFilename(t))); err != nil {
 			return fmt.Errorf("download %q: %w", t.Title, err)
 		}
