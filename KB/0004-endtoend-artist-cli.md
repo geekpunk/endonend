@@ -33,17 +33,20 @@ endtoend-artist-cli
 1) Create or update your manifest
 2) Validate a manifest
 3) Manage your signing key
-4) Help
-5) Exit
+4) Import an album from Bandcamp
+5) Help
+6) Exit
 ```
 
-Option 4 prints the same usage text as `endtoend-artist-cli help`, so help is identical from either interface.
+Option 5 prints the same usage text as `endtoend-artist-cli help`, so help is identical from either interface.
 
 **1) Create or update your manifest.** Asks plain-language questions in sequence: artist or label? name? what URL will you publish under (a domain you own, or a path on shared hosting like GitHub Pages)? contact email? If no local key exists yet, one is generated automatically at this point, with a short plain-language explanation of what just happened and why. It then walks through the catalog: add an album? title, release date, cover images, an insert or two if there are any, add a track? (repeating per track, then offering to add another album), label affiliation and this release's split, merch links, and presentation (colors, links, footer), offering sensible defaults at each step rather than demanding every field. It shows a summary before writing anything, then writes `union.source.json` and runs the same logic as `generate`, producing a freshly signed `manifest.json` and updated `history.json`.
 
 **2) Validate a manifest.** Asks for a local file path or a URL, then asks whether to run the deep check (fetches cross-referenced manifests to verify mutual attestation on label affiliation and album splits) or stay offline (schema, types, signature, and structural rules only). Prints a plain-language pass/fail report, not a raw error dump, each failure named in terms of what the artist should actually go fix.
 
 **3) Manage your signing key.** View the current public key (to paste into a label's roster confirmation, for example), or rotate it. Rotating signs a `key_rotated` history entry with the *old* key before switching to the new one, per 0003's Key rotation mechanism, so the platform can tell this was an authorized handoff rather than a hijack. The tool warns plainly that this only works while the old key is still present locally: if it's already lost, there is no rotation path, only starting a new identity and reaching out to affected parties directly.
+
+**4) Import an album from Bandcamp.** Bootstraps or updates `union.source.json` from an existing Bandcamp album page's own metadata, instead of retyping a tracklist by hand. Fully specified in [0005-bandcamp-import.md](./0005-bandcamp-import.md), including why it downloads audio and art locally rather than pointing the manifest at Bandcamp's own hosting.
 
 ## Non-interactive commands
 
@@ -84,8 +87,9 @@ $ endtoend-artist-cli
 1) Create or update your manifest
 2) Validate a manifest
 3) Manage your signing key
-4) Help
-5) Exit
+4) Import an album from Bandcamp
+5) Help
+6) Exit
 > 1
 
 Are you an artist or a label? [artist/label]: artist
@@ -121,4 +125,5 @@ $ endtoend-artist-cli validate ./manifest.json --deep --json
 - [0001-purpose.md](./0001-purpose.md): the "artists do not need to be technologists" principle this tool exists to satisfy.
 - [0002-architecture.md](./0002-architecture.md): the CLI's role in the shared-validator and CI/CD design.
 - [0003-manifest.md](./0003-manifest.md): the manifest shape and validation rules this tool implements.
+- [0005-bandcamp-import.md](./0005-bandcamp-import.md): the menu's "Import an album from Bandcamp" option and its flag-driven equivalent.
 - [KB/README.md](./README.md): KB conventions this document follows.

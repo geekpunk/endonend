@@ -32,7 +32,7 @@ func captureStdout(t *testing.T, f func()) string {
 
 func TestPrintHelp_MentionsEveryCommand(t *testing.T) {
 	out := captureStdout(t, printHelp)
-	for _, want := range []string{"generate", "validate", "keygen", "help", "interactive menu"} {
+	for _, want := range []string{"generate", "validate", "keygen", "import bandcamp", "help", "interactive menu"} {
 		if !strings.Contains(out, want) {
 			t.Errorf("help output missing %q:\n%s", want, out)
 		}

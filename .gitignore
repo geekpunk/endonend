@@ -3,7 +3,11 @@
 
 # Go build artifacts
 /cli/cli
+/cli/endtoend-artist-cli
 /cli/bin/
+
+# import bandcamp's downloaded audio/art (never the artist's masters, never committed)
+bandcamp-import/
 *.exe
 *.exe~
 *.dll

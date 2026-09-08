@@ -2,8 +2,11 @@ package main
 
 import (
 	"os"
+	"path/filepath"
 	"strings"
 	"testing"
+
+	"endonend/cli/internal/manifest"
 )
 
 func TestIsURL(t *testing.T) {
@@ -90,5 +93,73 @@ func TestMenuAddAlbum_BuildsAlbumFromScriptedInput(t *testing.T) {
 	tr := a.Tracks[0]
 	if tr.TrackID != "a1" || tr.Number != "1" || tr.Name != "Opening" || tr.File != "https://x/opening.mp3" {
 		t.Errorf("track = %+v", tr)
+	}
+}
+
+func TestMenuImportBandcamp_CreatesSourceWhenNoneExists(t *testing.T) {
+	chdir(t, t.TempDir())
+	server := bandcampFixtureServer(t, "fatal flaw", "Demo", []string{"PARACIDIC"})
+
+	lines := []string{
+		server.URL + "/album/demo",
+		"",                          // default artist type
+		"https://ligatures.example", // identity url
+		"band@ligatures.example",    // contact email
+		"n",                         // skip download
+	}
+	p := newTestPrompter(strings.Join(lines, "\n") + "\n")
+
+	out := captureStdout(t, func() { menuImportBandcamp(p) })
+	if strings.Contains(out, "Error") {
+		t.Errorf("menuImportBandcamp printed an error:\n%s", out)
+	}
+
+	src := loadExistingSource()
+	if src == nil {
+		t.Fatal("union.source.json was not created")
+	}
+	if src.Identity.URL != "https://ligatures.example" || src.Identity.ContactEmail != "band@ligatures.example" {
+		t.Errorf("identity = %+v", src.Identity)
+	}
+	if len(src.Catalog) != 1 || src.Catalog[0].AlbumName != "Demo" {
+		t.Errorf("catalog = %+v", src.Catalog)
+	}
+	if _, err := os.Stat("bandcamp-import"); err == nil {
+		t.Error("answering 'n' to download still created a download directory")
+	}
+}
+
+func TestMenuImportBandcamp_ReusesExistingSourceAndDownloads(t *testing.T) {
+	chdir(t, t.TempDir())
+	if err := writeSourceFile(sourcePath, &manifest.Source{
+		ManifestVersion: "1.0",
+		Identity: manifest.SourceIdentity{
+			Type: "artist", Name: "Existing", URL: "https://existing.example", ContactEmail: "old@existing.example",
+		},
+		Refresh: manifest.Refresh{TTLSeconds: 21600},
+	}); err != nil {
+		t.Fatalf("seed source: %v", err)
+	}
+	server := bandcampFixtureServer(t, "fatal flaw", "Demo", []string{"PARACIDIC"})
+
+	lines := []string{
+		server.URL + "/album/demo",
+		"y", // download this time
+	}
+	p := newTestPrompter(strings.Join(lines, "\n") + "\n")
+	out := captureStdout(t, func() { menuImportBandcamp(p) })
+	if strings.Contains(out, "Error") {
+		t.Errorf("menuImportBandcamp printed an error:\n%s", out)
+	}
+
+	src := loadExistingSource()
+	if src.Identity.URL != "https://existing.example" {
+		t.Errorf("identity.URL = %q, want the existing value left untouched", src.Identity.URL)
+	}
+	if len(src.Catalog) != 1 {
+		t.Fatalf("catalog = %+v, want 1 album", src.Catalog)
+	}
+	if _, err := os.Stat(filepath.Join("bandcamp-import", "demo", "cover.jpg")); err != nil {
+		t.Errorf("expected downloaded cover art: %v", err)
 	}
 }

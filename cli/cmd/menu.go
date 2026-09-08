@@ -27,8 +27,9 @@ endtoend-artist-cli
 1) Create or update your manifest
 2) Validate a manifest
 3) Manage your signing key
-4) Help
-5) Exit
+4) Import an album from Bandcamp
+5) Help
+6) Exit
 > `)
 		switch p.line() {
 		case "1":
@@ -38,17 +39,23 @@ endtoend-artist-cli
 		case "3":
 			menuManageKey(p)
 		case "4":
+			menuImportBandcamp(p)
+		case "5":
 			printHelp()
-		case "5", "":
+		case "6", "":
 			return
 		default:
-			fmt.Println("Please choose 1-5.")
+			fmt.Println("Please choose 1-6.")
 		}
 	}
 }
 
 func loadExistingSource() *manifest.Source {
-	raw, err := os.ReadFile(sourcePath)
+	return loadSourceFile(sourcePath)
+}
+
+func loadSourceFile(path string) *manifest.Source {
+	raw, err := os.ReadFile(path)
 	if err != nil {
 		return nil
 	}
@@ -57,6 +64,15 @@ func loadExistingSource() *manifest.Source {
 		return nil
 	}
 	return &src
+}
+
+func writeSourceFile(path string, src *manifest.Source) error {
+	raw, err := json.MarshalIndent(src, "", "  ")
+	if err != nil {
+		return fmt.Errorf("encode %s: %w", path, err)
+	}
+	raw = append(raw, '\n')
+	return os.WriteFile(path, raw, 0o644)
 }
 
 func menuCreateOrUpdate(p *prompter) {
@@ -150,13 +166,7 @@ func menuCreateOrUpdate(p *prompter) {
 		return
 	}
 
-	raw, err := json.MarshalIndent(src, "", "  ")
-	if err != nil {
-		fmt.Println("Error:", err)
-		return
-	}
-	raw = append(raw, '\n')
-	if err := os.WriteFile(sourcePath, raw, 0o644); err != nil {
+	if err := writeSourceFile(sourcePath, &src); err != nil {
 		fmt.Println("Error writing", sourcePath, ":", err)
 		return
 	}

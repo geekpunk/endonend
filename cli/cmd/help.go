@@ -11,6 +11,7 @@ Usage:
   endtoend-artist-cli generate [flags]              Write a freshly signed manifest.json and history.json.
   endtoend-artist-cli validate <path-or-url> [flags] Validate a manifest.
   endtoend-artist-cli keygen [flags]                Generate or rotate a signing key.
+  endtoend-artist-cli import bandcamp [flags] <url> Prefill union.source.json from a Bandcamp album page.
   endtoend-artist-cli help                          Show this message.
 
 generate flags:
@@ -27,6 +28,14 @@ keygen flags:
   --rotate                Rotate the key already in use, retiring it with a signed key_rotated history entry.
   --manifest-out string   Manifest to rotate, when --rotate is set (default "manifest.json")
   --history-out string    History log to update, when --rotate is set (default "history.json")
+
+import bandcamp flags (flags must come before the album URL):
+  --url string            Your own identity URL (required unless --source already exists)
+  --contact-email string  Contact email (required unless --source already exists)
+  --type string           "artist" or "label" (default "artist")
+  --source string         union.source.json to create or update (default "union.source.json")
+  --download-dir string   Where to save cover art and audio (default "bandcamp-import")
+  --skip-download         Prefill metadata and placeholder URLs only, skip downloading files
 
 Exit codes: 0 on success or a valid manifest, 1 on failure or an invalid manifest.
 `

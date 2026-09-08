@@ -43,3 +43,4 @@ Every document must link to the documents it builds on, using relative markdown 
 | [0002](./0002-architecture.md) | Architecture | Spec | Proposed | MVP architecture: languages, deployment, CI/CD, persistence, and how the static-file artist/label protocol is enforced. |
 | [0003](./0003-manifest.md) | Manifest | Spec | Proposed | The signed manifest file format artists and labels publish: identity, catalog, splits, history, and storefront presentation. |
 | [0004](./0004-endtoend-artist-cli.md) | endtoend-artist-cli | Spec | Proposed | The Go CLI that generates, signs, and validates a manifest, interactive menu by default, flags for CI. |
+| [0005](./0005-bandcamp-import.md) | Bandcamp import | Spec | Proposed | `import bandcamp` prefills `union.source.json` from an existing Bandcamp album page, downloading art/audio locally rather than linking to Bandcamp's hosting. |
