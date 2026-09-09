@@ -263,6 +263,14 @@ func TestValidateSource_RejectsInvalidInput(t *testing.T) {
 	}
 }
 
+func TestValidateSource_AcceptsMissingBackImage(t *testing.T) {
+	s := minimalSource()
+	s.Catalog[0].Images.Back = ""
+	if err := validateSource(&s); err != nil {
+		t.Errorf("validateSource with no images.back: want nil, got %v", err)
+	}
+}
+
 func TestValidateSource_RejectsCatalogOnLabelManifest(t *testing.T) {
 	s := minimalSource()
 	s.Identity.Type = "label"

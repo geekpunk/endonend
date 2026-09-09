@@ -92,8 +92,11 @@ func TestCmdImportBandcamp_FullImportWithDownload(t *testing.T) {
 		t.Errorf("album = %+v", album)
 	}
 	wantBase := "https://ligatures.example/albums/demo"
-	if album.Images.Front != wantBase+"/cover.jpg" || album.Images.Back != wantBase+"/cover.jpg" {
-		t.Errorf("images = %+v, want both pointing at %s/cover.jpg", album.Images, wantBase)
+	if album.Images.Front != wantBase+"/cover.jpg" {
+		t.Errorf("images.front = %q, want %s/cover.jpg", album.Images.Front, wantBase)
+	}
+	if album.Images.Back != "" {
+		t.Errorf("images.back = %q, want empty (Bandcamp exposes no separate back cover)", album.Images.Back)
 	}
 	if len(album.Tracks) != 2 {
 		t.Fatalf("got %d tracks, want 2", len(album.Tracks))

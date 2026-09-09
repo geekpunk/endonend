@@ -123,8 +123,10 @@ func importBandcamp(parsed importBandcampArgs) error {
 		AlbumName:    album.Title,
 		ReleaseDate:  album.ReleaseDate,
 		Images: manifest.Images{
+			// Bandcamp exposes no separate back cover; images.back is
+			// optional (KB/0003-manifest.md), so it's left unset rather
+			// than faked as a duplicate of the front cover.
 			Front:  remoteBase + "/cover.jpg",
-			Back:   remoteBase + "/cover.jpg",
 			Insert: []string{},
 		},
 		Tracks: buildTracksFromBandcamp(album, albumID, remoteBase),
@@ -249,5 +251,5 @@ func printImportSummary(album *bandcamp.Album, parsed importBandcampArgs, localD
 		fmt.Printf("Downloaded cover art and audio (128kbps streams, not your masters) to %s.\n", localDir)
 	}
 	fmt.Printf("Before running generate, upload those files to %s so they match what endonend.source.json now declares.\n", remoteBase)
-	fmt.Println("Bandcamp doesn't expose a separate back cover, so images.front and images.back both point at the same cover.jpg; replace images.back if you have a real one.")
+	fmt.Println("Bandcamp doesn't expose a separate back cover, so images.back was left unset (it's optional); add one by hand-editing endonend.source.json if you have a real one.")
 }

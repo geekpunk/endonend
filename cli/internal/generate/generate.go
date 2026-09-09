@@ -204,8 +204,8 @@ func validateSource(src *manifest.Source) error {
 			return fmt.Errorf("duplicate albumId %q", a.AlbumID)
 		}
 		seenAlbum[a.AlbumID] = true
-		if a.Images.Front == "" || a.Images.Back == "" {
-			return fmt.Errorf("album %q: images.front and images.back are required", a.AlbumID)
+		if a.Images.Front == "" {
+			return fmt.Errorf("album %q: images.front is required", a.AlbumID)
 		}
 		for _, t := range a.Tracks {
 			if t.TrackID == "" {

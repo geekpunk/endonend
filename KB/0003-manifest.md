@@ -167,7 +167,7 @@ Array of album objects. Required (non-empty) on artist manifests; omitted on lab
 | Field | Type | Required | Description |
 |---|---|---|---|
 | `front` | string (URL) | Yes | Front cover. |
-| `back` | string (URL) | Yes | Back cover. |
+| `back` | string (URL) | No | Back cover. Omitted or empty when a release has no distinct back cover to show (for example, an import from a source that only exposes one piece of art); renderers fall back to front-only display rather than flipping to a missing image. |
 | `insert` | array of string (URL) | No | Insert or booklet pages (liner notes, lyric sheets, a poster, and so on). Defaults to an empty array; not every release has one. |
 
 **Album `splits` entry**, one per contributing party:
@@ -457,7 +457,7 @@ This matches the `splits` entry for her on Ligatures' "Agency" album above, so t
 
 - Every required field listed above is present and of the correct type.
 - Every field typed `string (URL)`, or an array of that type such as `images.insert`, (including `merch[].url`, `catalog[].purchaseLinks[].url`, and every other link in the manifest) is a well-formed `http` or `https` URL; no other schemes are accepted.
-- `images.front` and `images.back` are both present on every album; `images.insert` may be an empty array but must be present as a field.
+- `images.front` is present on every album; `images.back` is optional. `images.insert` may be an empty array but must be present as a field.
 - `identity.url` plus the fixed suffix `/.well-known/endonend/manifest.json` equals the URL the manifest was actually fetched from, so a URL can't claim an identity it doesn't actually serve.
 - `identity.publicKey` is well-formed, and `signature.value` verifies against it over the canonicalized manifest.
 - Every `signature.algorithm`, on the manifest itself and on every history entry, is exactly `"ed25519"`; any other value is rejected outright, never tolerated as an unrecognized-but-harmless field.

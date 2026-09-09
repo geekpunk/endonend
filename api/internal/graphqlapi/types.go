@@ -285,9 +285,13 @@ func init() {
 		},
 	})
 	albumType.AddFieldConfig("imagesBack", &graphql.Field{
-		Type: graphql.NewNonNull(graphql.String),
+		Type: graphql.String,
 		Resolve: func(p graphql.ResolveParams) (any, error) {
-			return p.Source.(*store.Album).ImagesBack, nil
+			a := p.Source.(*store.Album)
+			if a.ImagesBack == "" {
+				return nil, nil
+			}
+			return a.ImagesBack, nil
 		},
 	})
 	albumType.AddFieldConfig("imagesInsert", &graphql.Field{

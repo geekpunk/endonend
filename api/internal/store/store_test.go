@@ -113,6 +113,28 @@ func TestUpsertManifest_ArtistRoundTrip(t *testing.T) {
 	}
 }
 
+func TestUpsertManifest_RoundTripsAlbumWithNoBackCover(t *testing.T) {
+	s := testStore(t)
+	ctx := context.Background()
+	m := artistManifest("https://ligatures.example", "Ligatures")
+	m.Catalog[0].Images.Back = ""
+
+	if err := s.UpsertManifest(ctx, m, []byte("{}"), nil, time.Now()); err != nil {
+		t.Fatalf("UpsertManifest: %v", err)
+	}
+
+	album, err := s.GetAlbum(ctx, m.Identity.URL, "agency-2024")
+	if err != nil {
+		t.Fatalf("GetAlbum: %v", err)
+	}
+	if album == nil {
+		t.Fatal("GetAlbum returned nil for an album that was just upserted")
+	}
+	if album.ImagesBack != "" {
+		t.Errorf("album.ImagesBack = %q, want empty", album.ImagesBack)
+	}
+}
+
 func TestUpsertManifest_ReplacesCatalogOnReupsert(t *testing.T) {
 	s := testStore(t)
 	ctx := context.Background()

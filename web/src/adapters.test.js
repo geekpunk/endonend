@@ -31,6 +31,14 @@ describe('albumToPlayerConfig', () => {
     expect(config.tracks[0]).toMatchObject({ number: 'A1', name: 'Opening', file: 'https://ligatures.example/opening.mp3' })
   })
 
+  it('passes through a null back cover when the manifest has none', () => {
+    const config = albumToPlayerConfig(baseAlbum({ imagesBack: null }))
+    expect(config.images).toEqual({
+      front: 'https://ligatures.example/front.png',
+      back: null,
+    })
+  })
+
   it('derives pageTitle from artist and album name when absent', () => {
     const config = albumToPlayerConfig(baseAlbum({ pageTitle: null }))
     expect(config.pageTitle).toBe('Ligatures - Agency')

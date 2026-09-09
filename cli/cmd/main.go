@@ -26,6 +26,8 @@ func run(args []string) int {
 		return cmdKeygen(args[1:])
 	case "import":
 		return cmdImport(args[1:])
+	case "publish":
+		return cmdPublish(args[1:])
 	case "help", "--help", "-h":
 		printHelp()
 		return 0

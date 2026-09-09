@@ -127,7 +127,7 @@
     },
     "images": {
       "type": "object",
-      "required": ["front", "back", "insert"],
+      "required": ["front", "insert"],
       "properties": {
         "front": { "$ref": "#/$defs/urlString" },
         "back": { "$ref": "#/$defs/urlString" },

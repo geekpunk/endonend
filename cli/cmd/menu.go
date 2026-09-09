@@ -29,8 +29,9 @@ endonend-artist-cli
 2) Validate a manifest
 3) Manage your signing key
 4) Import an album from Bandcamp
-5) Help
-6) Exit
+5) Publish to GitHub Pages
+6) Help
+7) Exit
 > `)
 		switch p.line() {
 		case "1":
@@ -42,11 +43,13 @@ endonend-artist-cli
 		case "4":
 			menuImportBandcamp(p)
 		case "5":
+			menuPublishGithub(p)
+		case "6":
 			printHelp()
-		case "6", "":
+		case "7", "":
 			return
 		default:
-			fmt.Println("Please choose 1-6.")
+			fmt.Println("Please choose 1-7.")
 		}
 	}
 }
@@ -193,7 +196,7 @@ func menuAddAlbum(p *prompter) manifest.Album {
 	a.AlbumName = p.askRequired("  Album title")
 	a.ReleaseDate = p.askRequired("  Release date (YYYY-MM-DD)")
 	a.Images.Front = p.askRequired("  Front cover image URL")
-	a.Images.Back = p.askRequired("  Back cover image URL")
+	a.Images.Back = p.ask("  Back cover image URL (optional, leave blank if there isn't one)", "")
 	a.Images.Insert = []string{}
 	for p.askYesNo("  Add an insert/booklet image?", false) {
 		a.Images.Insert = append(a.Images.Insert, p.askRequired("    Insert image URL"))

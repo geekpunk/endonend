@@ -94,4 +94,13 @@ describe('AlbumPlayer', () => {
     fireEvent.click(flipContainer)
     expect(screen.getByText('front')).toBeInTheDocument()
   })
+
+  it('shows the front cover only, with no flip control, when there is no back cover', () => {
+    render(<AlbumPlayer config={config({ images: { front: 'https://ligatures.example/front.png', back: null } })} />)
+
+    const images = screen.getAllByRole('img')
+    expect(images.filter((img) => img.alt.includes('cover'))).toHaveLength(1)
+    expect(screen.queryByText('back')).not.toBeInTheDocument()
+    expect(screen.queryByText('front')).not.toBeInTheDocument()
+  })
 })

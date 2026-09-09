@@ -72,7 +72,7 @@ type Presentation struct {
 
 type Images struct {
 	Front  string   `json:"front"`
-	Back   string   `json:"back"`
+	Back   string   `json:"back,omitempty"`
 	Insert []string `json:"insert"`
 }
 

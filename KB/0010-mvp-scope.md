@@ -92,7 +92,7 @@ type Album {
   pageTitle: String
   releaseDate: String!
   imagesFront: String!
-  imagesBack: String!
+  imagesBack: String
   imagesInsert: [String!]!
   downloadZip: String
   credits: JSON

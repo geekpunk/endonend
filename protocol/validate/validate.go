@@ -326,6 +326,11 @@ func (s *source) checkImages() {
 		if _, ok := images["insert"]; !ok {
 			s.fail(fmt.Sprintf("catalog[%d].images.insert", i), KindMissing, "images.insert must be present (an empty array is fine)")
 		}
+		if front, _ := images["front"].(string); front == "" {
+			s.fail(fmt.Sprintf("catalog[%d].images.front", i), KindMissing, "images.front is required")
+		}
+		// images.back is intentionally not required here: not every
+		// release has a distinct back cover, per KB/0003-manifest.md.
 	}
 }
 

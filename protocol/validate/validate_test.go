@@ -220,6 +220,38 @@ func TestValidatePath_MissingImagesField(t *testing.T) {
 	}
 }
 
+func TestValidatePath_BackCoverIsOptional(t *testing.T) {
+	m, entries, priv := buildSignedManifest(t)
+	m.Catalog[0].Images.Back = ""
+	resign(t, &m, priv)
+	path := writeManifestAndHistory(t, m, entries)
+
+	report, err := ValidatePath(path, Options{})
+	if err != nil {
+		t.Fatalf("ValidatePath returned error: %v", err)
+	}
+	if !report.Valid {
+		t.Errorf("report.Valid = false with an empty images.back, want true; failures: %+v", report.Failures)
+	}
+}
+
+func TestValidatePath_MissingFrontCoverFails(t *testing.T) {
+	m, entries, _ := buildSignedManifest(t)
+	m.Catalog[0].Images.Front = ""
+	path := writeManifestAndHistory(t, m, entries)
+
+	report, err := ValidatePath(path, Options{})
+	if err != nil {
+		t.Fatalf("ValidatePath returned error: %v", err)
+	}
+	if report.Valid {
+		t.Fatal("report.Valid = true with an empty images.front, want false")
+	}
+	if !hasFailureField(report, "catalog[0].images.front") {
+		t.Errorf("failures = %+v, want one on catalog[0].images.front", report.Failures)
+	}
+}
+
 func TestValidatePath_SplitsMustSumTo100(t *testing.T) {
 	m, entries, priv := buildSignedManifest(t)
 	m.Catalog[0].Splits = []manifest.AlbumSplitEntry{

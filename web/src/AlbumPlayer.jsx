@@ -187,23 +187,35 @@ function AlbumPlayer({ config }) {
       <audio ref={audioRef} preload="metadata" />
 
       <section className="hero">
-        <div className="album-flip-container" onClick={() => setFlipped(!flipped)}>
-          <div className={`album-flip-inner${flipped ? ' flipped' : ''}`}>
-            <div className="album-flip-face album-flip-front">
-              <img
-                src={config.images.front}
-                alt={`${config.artistName} - ${config.albumName} album cover`}
-              />
+        {config.images.back ? (
+          <div className="album-flip-container" onClick={() => setFlipped(!flipped)}>
+            <div className={`album-flip-inner${flipped ? ' flipped' : ''}`}>
+              <div className="album-flip-face album-flip-front">
+                <img
+                  src={config.images.front}
+                  alt={`${config.artistName} - ${config.albumName} album cover`}
+                />
+              </div>
+              <div className="album-flip-face album-flip-back">
+                <img
+                  src={config.images.back}
+                  alt={`${config.artistName} - ${config.albumName} album back cover`}
+                />
+              </div>
             </div>
-            <div className="album-flip-face album-flip-back">
-              <img
-                src={config.images.back}
-                alt={`${config.artistName} - ${config.albumName} album back cover`}
-              />
-            </div>
+            <div className="flip-hint">{flipped ? 'front' : 'back'}</div>
           </div>
-          <div className="flip-hint">{flipped ? 'front' : 'back'}</div>
-        </div>
+        ) : (
+          // No back cover declared (KB/0003-manifest.md's images.back is
+          // optional): show the front cover only, not flippable, rather
+          // than a flip control whose back face has no image to show.
+          <div className="album-flip-container">
+            <img
+              src={config.images.front}
+              alt={`${config.artistName} - ${config.albumName} album cover`}
+            />
+          </div>
+        )}
 
         <h1 className="album-title">
           {config.artistName} <span>&ndash; {config.albumName}</span>

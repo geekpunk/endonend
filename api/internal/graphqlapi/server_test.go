@@ -145,6 +145,36 @@ func TestAdminHandler_PreflightSucceedsWithoutAToken(t *testing.T) {
 	}
 }
 
+func TestPublicHandler_ImagesBackResolvesNullWhenAbsent(t *testing.T) {
+	s := testStore(t)
+	ctx := context.Background()
+	m := &manifest.Manifest{
+		ManifestVersion: "1.0",
+		Identity:        manifest.Identity{Type: "artist", Name: "Ligatures", URL: "https://ligatures.example", ContactEmail: "band@ligatures.example"},
+		Refresh:         manifest.Refresh{TTLSeconds: 21600},
+		History:         manifest.HistoryRef{URL: "https://ligatures.example/.well-known/endonend/history.json"},
+		Catalog: []manifest.Album{{
+			AlbumID: "agency-2024", AlbumVersion: 1, AlbumName: "Agency", ReleaseDate: "2024-05-01",
+			Images: manifest.Images{Front: "https://x/front.png", Insert: []string{}}, // no Back
+			Tracks: []manifest.Track{{TrackID: "a1", Number: "A1", Name: "Opening", File: "https://x/opening.mp3"}},
+		}},
+	}
+	if err := s.UpsertManifest(ctx, m, []byte("{}"), nil, time.Now()); err != nil {
+		t.Fatalf("seed UpsertManifest: %v", err)
+	}
+
+	h := NewPublicHandler(s)
+	resp := doGraphQL(t, h, `{ album(identityUrl: "https://ligatures.example", albumId: "agency-2024") { imagesFront imagesBack } }`, nil)
+	data := resp["data"].(map[string]any)
+	album := data["album"].(map[string]any)
+	if album["imagesFront"] != "https://x/front.png" {
+		t.Errorf("album.imagesFront = %v, want https://x/front.png", album["imagesFront"])
+	}
+	if album["imagesBack"] != nil {
+		t.Errorf("album.imagesBack = %v, want null when no back cover is declared", album["imagesBack"])
+	}
+}
+
 func TestAdminHandler_RequiresSecret(t *testing.T) {
 	s := testStore(t)
 	c := crawler.New(s)
